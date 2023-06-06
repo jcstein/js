@@ -1,5 +1,79 @@
 # @thirdweb-dev/react-native
 
+## 0.2.18
+
+### Patch Changes
+
+- [#1137](https://github.com/thirdweb-dev/js/pull/1137) [`dec4c4a8`](https://github.com/thirdweb-dev/js/commit/dec4c4a8cfd3f3b257e537fa84ed038e781e6311) Thanks [@iketw](https://github.com/iketw)! - [ReactNative] Export WCV1 and WCV2 abstract classes to facilitate creation of wallet connect based wallets
+
+  You can now extend the abstract classes `WalletConnectV1` or `WalletConnectV2` and set your own metadata when implementing a wallet.
+
+  Find an example below implementing `MyWallet` that supports the `WalletConnectV2` protocol.
+
+  ```javascript
+  import {
+    WCMeta,
+    WalletConnectV2,
+    WalletOptions,
+    WalletConfig,
+  } from '@thirdweb-dev/react-native';
+
+  export class MyWallet extends WalletConnectV2 {
+    static id = 'mywallet' as const; // ID needed to identify your wallet in the SDK.
+    static meta = {
+      name: 'My Wallet', // Name that will show up in our Connect Modal.
+      iconURL:
+        'my-wallet-icon-url-ipfs-or-png', // Icon that will show up in our Connect Modal.
+      links: { // The WalletConnect mobile links.
+        native: 'mywallet://',
+        universal: 'https://mywallet.com',
+      },
+    };
+
+    getMeta(): WCMeta {
+      return MyWallet.meta;
+    }
+  }
+
+  /**
+   * The WalletConnectV2 projectId.
+   *
+   * We provide a default projectId but recommend you get your own
+   * when launching your app in production.
+   */
+  type MyWalletConfig = { projectId?: string };
+
+  export const myWallet = (config?: MyWalletConfig): WalletConfig<WalletConnectV2> => {
+    return {
+      id: MyWallet.id,
+      meta: MyWallet.meta,
+      create: (options: WalletOptions) =>
+        new MyWallet({
+          ...options,
+          projectId: config?.projectId,
+          walletId: MyWallet.id,
+        }),
+    };
+  };
+  ```
+
+  You can then use your new wallet in the `ThirdwebProvider`'s `supportedWallets` prop:
+
+  ```javascript
+  import { ThirdwebProvider } from "@thirdweb-dev/react-native";
+
+  <ThirdwebProvider supportedWallets={[myWallet()]}>
+    <App />
+  </ThirdwebProvider>;
+  ```
+
+- [#1135](https://github.com/thirdweb-dev/js/pull/1135) [`15ef4779`](https://github.com/thirdweb-dev/js/commit/15ef4779e0a95cbae3053bdecfd4d54e4c30b07b) Thanks [@iketw](https://github.com/iketw)! - [ReactNative] Exports base UI components (react-native/components/base). They can now be used in your application.
+
+- Updated dependencies [[`3bf7f375`](https://github.com/thirdweb-dev/js/commit/3bf7f375933cbd7dd8c682a66e8c67bbcb268bf7), [`54cfd6d8`](https://github.com/thirdweb-dev/js/commit/54cfd6d8916c42d87b6aa438e607ce525766b686), [`8687d6ac`](https://github.com/thirdweb-dev/js/commit/8687d6ac3a363eae63eeb1959a953cbcd282d353), [`522453fd`](https://github.com/thirdweb-dev/js/commit/522453fd568b8c350141a96f9f1c6d5a3ef74493), [`9a015a23`](https://github.com/thirdweb-dev/js/commit/9a015a23cde09c8ba6c36593a84303ffe409a79a), [`6803c3e9`](https://github.com/thirdweb-dev/js/commit/6803c3e97ca74eed19cd90095afde25b02150d51), [`0cba69ca`](https://github.com/thirdweb-dev/js/commit/0cba69ca40a8cf6f106344247d0082212cd169da), [`56f85e57`](https://github.com/thirdweb-dev/js/commit/56f85e57df84bfa93e3230639c95d12466f8aec7), [`197a6838`](https://github.com/thirdweb-dev/js/commit/197a6838f69ae8b9ad46524e7c469fc757d0a2cb), [`6a91b6a0`](https://github.com/thirdweb-dev/js/commit/6a91b6a0253bab5914d4ebdad951dd1c5d141fbc), [`a5f16b6d`](https://github.com/thirdweb-dev/js/commit/a5f16b6dc50b37920a6e5210b60aa6a1682ceb63), [`b6728603`](https://github.com/thirdweb-dev/js/commit/b6728603972ccd6c95108b25e8562807f0f95e19)]:
+  - @thirdweb-dev/sdk@3.10.21
+  - @thirdweb-dev/react-core@3.13.1
+  - @thirdweb-dev/wallets@0.2.26
+
 ## 0.2.17
 
 ### Patch Changes
